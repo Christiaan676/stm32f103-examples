@@ -1,0 +1,22 @@
+[package]
+name = "stm32f103svd"
+version = "0.1.0"
+authors = ["Christiaan Hartman"]
+
+[dependencies.stm32f103xx]
+version = "0.8.0"
+features = ["rt"]
+
+[dependencies.cortex-m-rt]
+version = "0.3.13"
+features = ["abort-on-panic"]
+
+# disable both incremental compilation and parallel codegen to reduce the chances of running into
+# rust-lang/rust#47074
+[profile.dev]
+codegen-units = 1
+incremental = false
+
+[profile.release]
+debug = true
+lto = true
