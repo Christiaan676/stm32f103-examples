@@ -2,8 +2,10 @@
 #![feature(asm)]
 
 extern crate stm32f103xx;
+extern crate cortex_m;
 
 use stm32f103xx::GPIOC;
+use cortex_m::asm;
 
 fn main()  {
     let per = stm32f103xx::Peripherals::take().unwrap();
@@ -28,18 +30,17 @@ fn main()  {
 
 fn blink(gpioc: &GPIOC) {
     // Turn led on
-    gpioc.bsrr.write(|w| w.bs13().set());
+    gpioc.bsrr.write(|w| w.br13().set_bit());
     delay_ms(250);
     // Turn led off
-    gpioc.bsrr.write(|w| w.br13().set_bit());
+    gpioc.bsrr.write(|w| w.bs13().set());
     delay_ms(250);
 }
 
 fn delay_ms(ms: usize) {
-    tick_delay(500 * ms);
+    tick_delay(1000 * ms);
 }
 
 fn tick_delay(ticks: usize) {
-    // Think we can consider the execution of a nop instruction safe.
-    (0..ticks).for_each(|_| unsafe { asm!("nop") });
+    (0..ticks).for_each(|_| asm::nop());
 }
